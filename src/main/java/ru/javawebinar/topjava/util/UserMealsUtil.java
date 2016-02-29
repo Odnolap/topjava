@@ -71,9 +71,18 @@ public class UserMealsUtil {
         */
 
         // Вариант со stream'ом 3
+        /* Вариант актуален, если при суммировании надо что-то еще делать - фильтровать, модифицировать и т.п.
+        // Тогда в Collectors.mapping мы указываем что берется в качестве базы для значения (1-й параметр), и какие манипуляции с этим проделываются при агрегации
+        // Если ничего делать не надо, то лучше использовать 4-й вариант
         Map<LocalDate, Integer> caloriesSumPerDate = mealList
                 .stream()
                 .collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(), Collectors.mapping(UserMeal::getCalories, Collectors.summingInt(i -> i))));
+        */
+
+        // Вариант со stream'ом 4
+        Map<LocalDate, Integer> caloriesSumPerDate = mealList
+                .stream()
+                .collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
 
 
         // Создание отфильтрованного списка для возврата
