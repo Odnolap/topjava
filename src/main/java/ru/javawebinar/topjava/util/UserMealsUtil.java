@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -33,23 +35,43 @@ public class UserMealsUtil {
         System.out.println(resultList);
     }
 
+
     public static List<UserMealWithExceed>  getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+
+
         Map<LocalDate, Integer> caloriesSumPerDate = new HashMap<>();
+
+        // Сбор информации о суммах колорий по дням
+        /* Вариант с циклом.
         for (UserMeal userMeal : mealList){
             if (!caloriesSumPerDate.containsKey(userMeal.getDateTime().toLocalDate()))
                 caloriesSumPerDate.put(userMeal.getDateTime().toLocalDate(), userMeal.getCalories());
             else
                 caloriesSumPerDate.put(userMeal.getDateTime().toLocalDate(), userMeal.getCalories() + caloriesSumPerDate.get(userMeal.getDateTime().toLocalDate()));
         }
-
-        /* Предложение IDEA
-        List<UserMealWithExceed> result =
-                mealList.stream()
-                        .filter(userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
-                        .map(userMeal -> new UserMealWithExceed(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), caloriesSumPerDate.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
-                        .collect(Collectors.toList());
         */
 
+        /*
+        // Вариант со stream'ом 1
+        mealList
+                .stream()
+                .forEach(um -> {
+                    caloriesSumPerDate.computeIfPresent(um.getDateTime().toLocalDate(), (localDate, integer) -> integer + um.getCalories());
+                    caloriesSumPerDate.putIfAbsent(um.getDateTime().toLocalDate(), um.getCalories());
+                });
+        */
+
+        // Вариант со stream'ом 2
+        mealList
+                .stream()
+                .forEach(um ->
+                    caloriesSumPerDate
+                            .compute(um.getDateTime().toLocalDate(), (localDate, integer) -> Objects.nonNull(integer) ? integer + um.getCalories() : um.getCalories())
+                );
+
+
+        // Создание отфильтрованного списка для возврата
+        /* Вариант с циклом.
         List<UserMealWithExceed> result = new ArrayList<>();
         for (UserMeal userMeal : mealList){
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)){
@@ -60,7 +82,13 @@ public class UserMealsUtil {
                         caloriesSumPerDate.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay));
             }
         }
+        */
 
-        return result;
+        // Вариант со stream'ом
+        return mealList
+                .stream()
+                .filter(um -> TimeUtil.isBetween(um.getDateTime().toLocalTime(), startTime, endTime))
+                .map(um -> new UserMealWithExceed(um.getDateTime(), um.getDescription(), um.getCalories(), caloriesSumPerDate.get(um.getDateTime().toLocalDate()) > caloriesPerDay))
+                .collect(Collectors.toList());
     }
 }
