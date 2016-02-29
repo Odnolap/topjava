@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +38,7 @@ public class UserMealsUtil {
     public static List<UserMealWithExceed>  getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
 
-        Map<LocalDate, Integer> caloriesSumPerDate = new HashMap<>();
+        // Map<LocalDate, Integer> caloriesSumPerDate;// = new HashMap<>();
 
         // Сбор информации о суммах колорий по дням
         /* Вариант с циклом.
@@ -62,12 +61,19 @@ public class UserMealsUtil {
         */
 
         // Вариант со stream'ом 2
+        /*
         mealList
                 .stream()
                 .forEach(um ->
                     caloriesSumPerDate
                             .compute(um.getDateTime().toLocalDate(), (localDate, integer) -> Objects.nonNull(integer) ? integer + um.getCalories() : um.getCalories())
                 );
+        */
+
+        // Вариант со stream'ом 3
+        Map<LocalDate, Integer> caloriesSumPerDate = mealList
+                .stream()
+                .collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(), Collectors.mapping(UserMeal::getCalories, Collectors.summingInt(i -> i))));
 
 
         // Создание отфильтрованного списка для возврата
