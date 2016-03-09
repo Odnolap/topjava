@@ -12,11 +12,6 @@ import java.util.List;
  * 11.01.2015.
  */
 public class UserMealWithExceed {
-    public static final List<UserMealWithExceed> TEST_UMWE_LIST;
-    static {
-        TEST_UMWE_LIST = UserMealsUtil.getFilteredMealsWithExceeded(UserMeal.TEST_USER_MEAL_LIST, LocalTime.of(0, 0), LocalTime.of(23, 59, 59), 2000);
-    }
-
     protected final LocalDateTime dateTime;
 
     protected final String description;

@@ -19,6 +19,8 @@ public class UserServlet extends HttpServlet {
     private static final Logger LOG = getLogger(UserServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=utf-8");
+
         LOG.debug("redirect to userList");
 
 //        request.getRequestDispatcher("/userList.jsp").forward(request, response);
