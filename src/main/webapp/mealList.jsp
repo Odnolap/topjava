@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="utf-8" session="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,6 +18,8 @@
                 <th>Date</th>
                 <th>Description</th>
                 <th>Calories</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
             </tr>
             <c:forEach items="${requestScope.UMWEList}" var="umwe">
                 <c:choose>
@@ -33,6 +34,8 @@
                 <td>${umwe.dateTime.toLocalDate()} ${umwe.dateTime.toLocalTime()}</td>
                 <td>${umwe.description}</td>
                 <td>${umwe.calories}</td>
+                <td></td>
+                <td></td>
                 </tr>
 
             </c:forEach>
