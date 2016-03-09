@@ -25,7 +25,7 @@ public class MealServlet extends HttpServlet {
         resp.setContentType("text/html;charset=utf-8");
 
         List<UserMealWithExceed> testUmweList = UserMealsUtil.getFilteredMealsWithExceeded(UserMeal.TEST_USER_MEAL_LIST, LocalTime.of(0, 0), LocalTime.of(23, 59, 59), 2000);
-        req.setAttribute("UMWE_List", testUmweList);
+        req.setAttribute("UMWEList", testUmweList);
 
         LOG.debug("forward to MealList");
         req.getRequestDispatcher("/mealList.jsp").forward(req, resp);
