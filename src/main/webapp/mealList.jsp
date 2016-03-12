@@ -22,6 +22,7 @@
                 <th>&nbsp;</th>
             </tr>
             <c:forEach items="${requestScope.UMWEList}" var="umwe">
+                <jsp:useBean id="umwe" scope="page" type="ru.javawebinar.topjava.model.UserMealWithExceed"/>
                 <c:choose>
                     <c:when test="${umwe.exceed}">
                         <tr style="color: red">
