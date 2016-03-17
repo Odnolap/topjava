@@ -45,10 +45,4 @@ public class UserMealServiceImpl implements UserMealService {
         return repository.getAll(ownerUserId);
     }
 
-    @Override
-    public void update(UserMeal userMeal, int ownerUserId) throws NotFoundException{
-        UserMeal result = repository.save(userMeal, ownerUserId);
-
-        if (result == null) throw new NotFoundException("UserMeal with this ID doesn't exist or this UserMeal doesn't own to User!");
-    }
 }

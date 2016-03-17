@@ -2,11 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.javawebinar.topjava.LoggedUser;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
-import ru.javawebinar.topjava.service.UserMealService;
-import ru.javawebinar.topjava.service.UserMealServiceImpl;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.web.meal.UserMealRestController;
 import ru.javawebinar.topjava.web.user.ProfileRestController;
@@ -28,25 +24,23 @@ public class MealServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(MealServlet.class);
 
     private UserMealRestController userMealRestController;
-    private ProfileRestController profileRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        profileRestController = new ProfileRestController();
         userMealRestController = new UserMealRestController();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        UserMeal userMeal = new UserMeal(id.isEmpty() ? null : Integer.valueOf(id),
+        LOG.info(id.isEmpty() ? "Create {}" : "Update {}", id);
+        UserMeal userMeal = userMealRestController.save(
+                id,
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.valueOf(request.getParameter("calories")),
-                profileRestController.get().getId());
-        LOG.info(userMeal.isNew() ? "Create {}" : "Update {}", userMeal);
-        userMealRestController.save(userMeal, profileRestController.get());
+                Integer.valueOf(request.getParameter("calories")));
+        LOG.info(userMeal.isNew() ? "Created {}" : "Updated {}", userMeal);
         response.sendRedirect("meals");
     }
 
@@ -56,17 +50,17 @@ public class MealServlet extends HttpServlet {
         if (action == null) {
             LOG.info("getAll");
             request.setAttribute("mealList",
-                    UserMealsUtil.getWithExceeded(userMealRestController.getAll(profileRestController.get()), UserMealsUtil.DEFAULT_CALORIES_PER_DAY));
+                    UserMealsUtil.getWithExceeded(userMealRestController.getAll(), UserMealsUtil.DEFAULT_CALORIES_PER_DAY));
             request.getRequestDispatcher("/mealList.jsp").forward(request, response);
         } else if (action.equals("delete")) {
             int id = getId(request);
             LOG.info("Delete {}", id);
-            userMealRestController.delete(id, profileRestController.get());
+            userMealRestController.delete(id);
             response.sendRedirect("meals");
         } else {
             final UserMeal meal = action.equals("create") ?
-                    new UserMeal(LocalDateTime.now(), "", 1000, profileRestController.get().getId()) :
-                    userMealRestController.get(getId(request),profileRestController.get());
+                    userMealRestController.save(null, LocalDateTime.now(), "", 1000) :
+                    userMealRestController.get(getId(request));
             request.setAttribute("meal", meal);
             request.getRequestDispatcher("mealEdit.jsp").forward(request, response);
         }
