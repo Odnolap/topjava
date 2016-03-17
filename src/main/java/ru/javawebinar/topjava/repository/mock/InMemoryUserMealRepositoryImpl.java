@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.util.UserMealsUtil;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -19,11 +18,14 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        UserMealsUtil.MEAL_LIST.forEach(this::save);
+        UserMealsUtil.MEAL_LIST.forEach(userMeal -> save(userMeal, userMeal.getOwnerUserId()));
     }
 
     @Override
-    public UserMeal save(UserMeal userMeal) {
+    public UserMeal save(UserMeal userMeal, int ownerUserId) {
+        if (userMeal.getOwnerUserId() == null || userMeal.getOwnerUserId() != ownerUserId)
+            return null;
+
         if (userMeal.isNew()) {
             userMeal.setId(counter.incrementAndGet());
         }
@@ -32,13 +34,23 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
     }
 
     @Override
-    public void delete(int id) {
-        repository.remove(id);
+    public boolean delete(int id, int  ownerUserId) {
+        UserMeal userMealForDelete = repository.get(id);
+        if (userMealForDelete != null && userMealForDelete.getOwnerUserId() == ownerUserId) {
+            repository.remove(id);
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
-    public UserMeal get(int id) {
-        return repository.get(id);
+    public UserMeal get(int id, int ownerUserId) {
+        UserMeal result = repository.get(id);
+        if (result.getOwnerUserId() != null && result.getOwnerUserId() == ownerUserId)
+            return result;
+        else
+            return null;
     }
 
     @Override
@@ -46,7 +58,7 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
         return repository
                 .values()
                 .stream()
-                .filter(userMeal -> userMeal.getId() == ownerUserId)
+                .filter(userMeal -> userMeal.getOwnerUserId() != null && userMeal.getOwnerUserId() == ownerUserId)
                 .sorted((o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()))
                 .collect(Collectors.toList());
     }

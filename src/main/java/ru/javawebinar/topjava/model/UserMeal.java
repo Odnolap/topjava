@@ -15,13 +15,13 @@ public class UserMeal {
 
     private final int calories;
 
-    private final int ownerUserId;
+    private final Integer ownerUserId;
 
     public UserMeal(LocalDateTime dateTime, String description, int calories, int ownerUserId) {
         this(null, dateTime, description, calories, ownerUserId);
     }
 
-    public UserMeal(Integer id, LocalDateTime dateTime, String description, int calories, int ownerUserId) {
+    public UserMeal(Integer id, LocalDateTime dateTime, String description, int calories, Integer ownerUserId) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
@@ -53,7 +53,7 @@ public class UserMeal {
         return id == null;
     }
 
-    public int getOwnerUserId() {
+    public Integer getOwnerUserId() {
         return ownerUserId;
     }
 
