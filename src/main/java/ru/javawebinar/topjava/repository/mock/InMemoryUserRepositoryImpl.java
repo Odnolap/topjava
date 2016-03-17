@@ -27,6 +27,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     {
         repository.put(1, new User(1, "User 1 (Admin)", "admin@mysite.com", "adminpass", Role.ROLE_ADMIN, Role.ROLE_USER));
         repository.put(2, new User(2, "User 2 (Simple user)", "user@mysite.com", "123456", Role.ROLE_USER));
+        repository.put(3, new User(3, "User 3 (Vasya)", "vasya@mysite.com", "qwerty", Role.ROLE_USER));
     }
 
     @Override

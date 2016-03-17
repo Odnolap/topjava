@@ -4,10 +4,11 @@ import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -41,8 +42,13 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
     }
 
     @Override
-    public Collection<UserMeal> getAll() {
-        return repository.values();
+    public Collection<UserMeal> getAll(int ownerUserId) {
+        return repository
+                .values()
+                .stream()
+                .filter(userMeal -> userMeal.getId() == ownerUserId)
+                .sorted((o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()))
+                .collect(Collectors.toList());
     }
 }
 
