@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.UserMeal;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * GKislin
@@ -17,5 +17,5 @@ public interface UserMealRepository {
     // null if not found
     UserMeal get(int id, int ownerUserId);
 
-    Collection<UserMeal> getAll(int ownerUserId);
+    List<UserMeal> getAll(int ownerUserId);
 }

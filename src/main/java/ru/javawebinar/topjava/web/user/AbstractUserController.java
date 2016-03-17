@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.service.UserServiceImpl;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public abstract class AbstractUserController {
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
+    private UserService service = new UserServiceImpl();
 
     public List<User> getAll() {
         LOG.info("getAll");

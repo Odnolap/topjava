@@ -54,12 +54,12 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
     }
 
     @Override
-    public Collection<UserMeal> getAll(int ownerUserId) {
+    public List<UserMeal> getAll(int ownerUserId) {
         return repository
                 .values()
                 .stream()
                 .filter(userMeal -> userMeal.getOwnerUserId() != null && userMeal.getOwnerUserId() == ownerUserId)
-                .sorted((o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()))
+                .sorted((o1, o2) -> -o1.getDateTime().compareTo(o2.getDateTime()))
                 .collect(Collectors.toList());
     }
 }
