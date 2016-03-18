@@ -9,7 +9,9 @@ import ru.javawebinar.topjava.to.UserMealWithExceed;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.web.user.ProfileRestController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -27,6 +29,10 @@ public class UserMealRestController {
 
     public List<UserMealWithExceed> getAll() {
         return UserMealsUtil.getWithExceeded(service.getAll(user.getId()), LoggedUser.getCaloriesPerDay());
+    }
+
+    public List<UserMealWithExceed> getAll(LocalDate dateFrom, LocalDate dateTo, LocalTime startTime, LocalTime endTime) {
+        return UserMealsUtil.getFilteredWithExceeded(service.getAll(user.getId()), startTime, endTime, LoggedUser.getCaloriesPerDay());
     }
 
     public void delete(int id) {

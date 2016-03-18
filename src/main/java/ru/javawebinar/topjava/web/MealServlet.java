@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -33,15 +35,27 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
-        LOG.info(id.isEmpty() ? "Create {}" : "Update {}", id);
-        UserMeal userMeal = userMealRestController.save(
-                id,
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.valueOf(request.getParameter("calories")));
-        LOG.info(userMeal.isNew() ? "Created {}" : "Updated {}", userMeal);
-        response.sendRedirect("meals");
+        String action = request.getParameter("action");
+        if ("edit".equals(action)) {
+            String id = request.getParameter("id");
+            LOG.info(id.isEmpty() ? "Create {}" : "Update {}", id);
+            UserMeal userMeal = userMealRestController.save(
+                    id,
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.valueOf(request.getParameter("calories")));
+            LOG.info(userMeal.isNew() ? "Created {}" : "Updated {}", userMeal);
+            response.sendRedirect("meals");
+        } else if ("search".equals(action)) {
+            LOG.info("get All filtered");
+            request.setAttribute("mealList", userMealRestController.getAll(
+                    LocalDate.parse(request.getParameter("startDate")),
+                    LocalDate.parse(request.getParameter("endDate")),
+                    LocalTime.parse(request.getParameter("startTime")),
+                    LocalTime.parse(request.getParameter("endTime"))
+            ));
+            request.getRequestDispatcher("/mealList.jsp").forward(request, response);
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
