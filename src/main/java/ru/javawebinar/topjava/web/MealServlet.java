@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.web.meal.UserMealRestController;
@@ -26,14 +28,13 @@ public class MealServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(MealServlet.class);
 
     private UserMealRestController userMealRestController;
-
-    public void setUserMealRestController(UserMealRestController userMealRestController) {
-        this.userMealRestController = userMealRestController;
-    }
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        userMealRestController = appCtx.getBean(UserMealRestController.class);
 //        userMealRestController = new UserMealRestController();
     }
 
@@ -95,5 +96,11 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.valueOf(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
+        super.destroy();
     }
 }
