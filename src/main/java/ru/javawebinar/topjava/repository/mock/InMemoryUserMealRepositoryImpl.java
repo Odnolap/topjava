@@ -4,6 +4,7 @@ import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,9 +56,18 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
 
     @Override
     public List<UserMeal> getAll(int ownerUserId) {
+        return getAll(ownerUserId, null, null);
+    }
+
+    @Override
+    public List<UserMeal> getAll(int ownerUserId, LocalDate startDate, LocalDate endDate) {
+        LocalDate startLD = startDate == null ? LocalDate.MIN : startDate;
+        LocalDate endLD = endDate == null ? LocalDate.MAX : endDate;
+
         return repository
                 .values()
                 .stream()
+                .filter(userMeal -> userMeal.getDateTime().toLocalDate().compareTo(startLD) >= 0 && userMeal.getDateTime().toLocalDate().compareTo(endLD) <= 0)
                 .filter(userMeal -> userMeal.getOwnerUserId() != null && userMeal.getOwnerUserId() == ownerUserId)
                 .sorted((o1, o2) -> -o1.getDateTime().compareTo(o2.getDateTime()))
                 .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.repository.UserMealRepository;
 import ru.javawebinar.topjava.repository.mock.InMemoryUserMealRepositoryImpl;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,11 @@ public class UserMealServiceImpl implements UserMealService {
 
     @Override
     public List<UserMeal> getAll(int ownerUserId) {
-        return repository.getAll(ownerUserId);
+        return repository.getAll(ownerUserId, null, null);
     }
 
+    @Override
+    public List<UserMeal> getAll(int ownerUserId, LocalDate dateFrom, LocalDate dateTo) {
+        return repository.getAll(ownerUserId, dateFrom, dateTo);
+    }
 }

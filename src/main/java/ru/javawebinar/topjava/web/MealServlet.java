@@ -48,9 +48,18 @@ public class MealServlet extends HttpServlet {
             response.sendRedirect("meals");
         } else if ("search".equals(action)) {
             LOG.info("get All filtered");
+            String sd = request.getParameter("startDate");
+            String ed = request.getParameter("endDate");
+            LocalDate sld = null;
+            LocalDate eld = null;
+            try {
+                sld = LocalDate.parse(sd);
+                eld = LocalDate.parse(ed);
+            } catch (Exception ignored) {}
+
             request.setAttribute("mealList", userMealRestController.getAll(
-                    LocalDate.parse(request.getParameter("startDate")),
-                    LocalDate.parse(request.getParameter("endDate")),
+                    sld,
+                    eld,
                     LocalTime.parse(request.getParameter("startTime")),
                     LocalTime.parse(request.getParameter("endTime"))
             ));

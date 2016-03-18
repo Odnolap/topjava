@@ -28,11 +28,11 @@ public class UserMealRestController {
     }
 
     public List<UserMealWithExceed> getAll() {
-        return UserMealsUtil.getWithExceeded(service.getAll(user.getId()), LoggedUser.getCaloriesPerDay());
+        return UserMealsUtil.getWithExceeded(service.getAll(user.getId(), null, null), LoggedUser.getCaloriesPerDay());
     }
 
     public List<UserMealWithExceed> getAll(LocalDate dateFrom, LocalDate dateTo, LocalTime startTime, LocalTime endTime) {
-        return UserMealsUtil.getFilteredWithExceeded(service.getAll(user.getId()), startTime, endTime, LoggedUser.getCaloriesPerDay());
+        return UserMealsUtil.getFilteredWithExceeded(service.getAll(user.getId(), dateFrom, dateTo), startTime, endTime, LoggedUser.getCaloriesPerDay());
     }
 
     public void delete(int id) {
