@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.service.UserServiceImpl;
 
 import javax.servlet.ServletException;
@@ -17,11 +18,16 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class UserServlet extends HttpServlet {
     private static final Logger LOG = getLogger(UserServlet.class);
+    private UserService service;
+
+    public void setService(UserService service) {
+        this.service = service;
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.info("getAll");
-        request.setAttribute("userList", new UserServiceImpl().getAll());
+        request.setAttribute("userList", service.getAll());
         request.getRequestDispatcher("/userList.jsp").forward(request, response);
     }
 }

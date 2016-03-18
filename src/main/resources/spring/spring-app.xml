@@ -4,21 +4,36 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!--
         <bean class="ru.javawebinar.topjava.repository.mock.InMemoryUserRepositoryImpl" id="inMemoryUserRepository"/>
 
-        <bean class="ru.javawebinar.topjava.service.UserServiceImpl">
+        <bean class="ru.javawebinar.topjava.service.UserServiceImpl" id="userServiceImpl">
             <property name="repository" ref="inMemoryUserRepository"/>
         </bean>
-    -->
+
+        <bean class="ru.javawebinar.topjava.repository.mock.InMemoryUserMealRepositoryImpl" id="inMemoryUserMealRepository"/>
+
+        <bean class="ru.javawebinar.topjava.service.UserMealServiceImpl" id="userMealService">
+            <property name="repository" ref="inMemoryUserMealRepository"/>
+        </bean>
 
 
-    <context:annotation-config/>
+        <bean class="ru.javawebinar.topjava.web.user.ProfileRestController" id="profileRestController">
+            <property name="service" ref="userServiceImpl"/>
+        </bean>
+        <bean class="ru.javawebinar.topjava.web.user.AdminRestController" id="adminRestController">
+                <property name="service" ref="userServiceImpl"/>
+        </bean>
+
+        <bean class="ru.javawebinar.topjava.web.meal.UserMealRestController" id="userMealRestController">
+            <property name="service" ref="userMealService"/>
+        </bean>
+
+   <!-- <context:annotation-config/>
 
     <context:component-scan base-package="ru.javawebinar.**.repository"/>
 
     <context:component-scan base-package="ru.javawebinar.**.service"/>
 
-    <context:component-scan base-package="ru.javawebinar.**.web"/>
+    <context:component-scan base-package="ru.javawebinar.**.web"/>-->
 
 </beans>

@@ -15,7 +15,11 @@ import java.util.List;
  */
 public class UserMealServiceImpl implements UserMealService {
 
-    private UserMealRepository repository = new InMemoryUserMealRepositoryImpl();
+    private UserMealRepository repository; // = new InMemoryUserMealRepositoryImpl();
+
+    public void setRepository(UserMealRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public UserMeal save(UserMeal userMeal, int ownerUserId) throws NotFoundException{

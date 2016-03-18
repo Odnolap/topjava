@@ -27,10 +27,14 @@ public class MealServlet extends HttpServlet {
 
     private UserMealRestController userMealRestController;
 
+    public void setUserMealRestController(UserMealRestController userMealRestController) {
+        this.userMealRestController = userMealRestController;
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        userMealRestController = new UserMealRestController();
+//        userMealRestController = new UserMealRestController();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {

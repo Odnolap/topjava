@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
@@ -18,33 +19,36 @@ import java.util.List;
  * GKislin
  * 06.03.2015.
  */
+@Controller
 public class UserMealRestController {
-    private ProfileRestController profileRestController = new ProfileRestController();
-    User user = profileRestController.get();
-    private UserMealService service = new UserMealServiceImpl();
-    
+    private UserMealService service; // = new UserMealServiceImpl();
+
+    public void setService(UserMealService service) {
+        this.service = service;
+    }
+
     public UserMeal save(String id, LocalDateTime dateTime, String description, int calories) {
-        return service.save(new UserMeal(id.isEmpty() ? null : Integer.valueOf(id), dateTime, description, calories, user.getId()), user.getId());
+        return service.save(new UserMeal(id.isEmpty() ? null : Integer.valueOf(id), dateTime, description, calories, LoggedUser.id()), LoggedUser.id());
     }
 
     public List<UserMealWithExceed> getAll() {
-        return UserMealsUtil.getWithExceeded(service.getAll(user.getId(), null, null), LoggedUser.getCaloriesPerDay());
+        return UserMealsUtil.getWithExceeded(service.getAll(LoggedUser.id(), null, null), LoggedUser.getCaloriesPerDay());
     }
 
     public List<UserMealWithExceed> getAll(LocalDate dateFrom, LocalDate dateTo, LocalTime startTime, LocalTime endTime) {
-        return UserMealsUtil.getFilteredWithExceeded(service.getAll(user.getId(), dateFrom, dateTo), startTime, endTime, LoggedUser.getCaloriesPerDay());
+        return UserMealsUtil.getFilteredWithExceeded(service.getAll(LoggedUser.id(), dateFrom, dateTo), startTime, endTime, LoggedUser.getCaloriesPerDay());
     }
 
     public void delete(int id) {
-        service.delete(id, user.getId());
+        service.delete(id, LoggedUser.id());
     }
 
     public UserMeal get(int id) {
-        return service.get(id, user.getId());
+        return service.get(id, LoggedUser.id());
     }
 
     public UserMeal create(LocalDateTime dateTime, String description, int calories) {
-        return new UserMeal(dateTime, description, calories, user.getId());
+        return new UserMeal(dateTime, description, calories, LoggedUser.id());
     }
 
 }

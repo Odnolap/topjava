@@ -18,7 +18,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository repository = new InMemoryUserRepositoryImpl();
+    private UserRepository repository; // = new InMemoryUserRepositoryImpl();
+
+    public void setRepository(UserRepository repository) {
+        this.repository = repository;
+    }
 
     public User save(User user) {
         return repository.save(user);
