@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class AbstractUserController {
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
-//    @Autowired
+    @Autowired
     private UserService service; // = new UserServiceImpl();
 
     public void setService(UserService service) {

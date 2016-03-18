@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.model.User;
@@ -21,11 +22,8 @@ import java.util.List;
  */
 @Controller
 public class UserMealRestController {
+    @Autowired
     private UserMealService service; // = new UserMealServiceImpl();
-
-    public void setService(UserMealService service) {
-        this.service = service;
-    }
 
     public UserMeal save(String id, LocalDateTime dateTime, String description, int calories) {
         return service.save(new UserMeal(id.isEmpty() ? null : Integer.valueOf(id), dateTime, description, calories, LoggedUser.id()), LoggedUser.id());
