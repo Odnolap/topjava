@@ -18,11 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class UserServlet extends HttpServlet {
     private static final Logger LOG = getLogger(UserServlet.class);
-    private UserService service;
-
-    public void setService(UserService service) {
-        this.service = service;
-    }
+    private UserService service = new UserServiceImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
