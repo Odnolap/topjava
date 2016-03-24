@@ -32,8 +32,6 @@ CREATE TABLE meals
   date_time  TIMESTAMP NOT NULL,
   description VARCHAR NOT NULL,
   calories   INTEGER NOT NULL,
-  registered TIMESTAMP DEFAULT now(),
-  enabled    BOOL DEFAULT TRUE,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 CREATE INDEX user_meal_user_id_idx ON meals (user_id);
