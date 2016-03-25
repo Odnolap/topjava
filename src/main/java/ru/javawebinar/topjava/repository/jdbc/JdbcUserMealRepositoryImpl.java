@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User: gkislin
@@ -43,6 +44,8 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
 
     @Override
     public UserMeal save(UserMeal userMeal, int userId) {
+        Objects.requireNonNull(userMeal);
+
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", userMeal.getId())
                 .addValue("dateTime", Timestamp.valueOf(userMeal.getDateTime()))
@@ -54,9 +57,10 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
             Number newKey = insertUserMeal.executeAndReturnKey(map);
             userMeal.setId(newKey.intValue());
         } else {
-            namedParameterJdbcTemplate.update(
+            int i = namedParameterJdbcTemplate.update(
                     "UPDATE meals SET date_time=:dateTime, description=:description, calories=:calories " +
                             " WHERE id=:id AND user_id=:userId", map);
+            if (i == 0) return null;
         }
         return userMeal;
     }
@@ -69,7 +73,7 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
     @Override
     public UserMeal get(int id, int userId) {
         List<UserMeal> userMeals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE id=? AND user_id=?", ROW_MAPPER, id, userId);
-        return DataAccessUtils.singleResult(userMeals);
+        return userMeals.isEmpty() ? null : DataAccessUtils.singleResult(userMeals);
     }
 
     @Override
@@ -79,6 +83,9 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
 
     @Override
     public List<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
+        Objects.requireNonNull(startDate);
+        Objects.requireNonNull(endDate);
+
         return jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id=? AND date_time BETWEEN ? AND ? ORDER BY date_time DESC",
                 ROW_MAPPER,
                 userId,
