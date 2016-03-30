@@ -1,7 +1,14 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,6 +21,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -26,6 +35,27 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class UserMealServiceTest {
+    private static final Logger LOG = LoggerFactory.getLogger(UserMealServiceTest.class);
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    private static String logString;
+
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected long time;
+        @Override
+        protected void starting(Description description) {
+            time = Calendar.getInstance().getTimeInMillis();
+        }
+
+        @Override
+        protected void finished(Description description) {
+            time = Calendar.getInstance().getTimeInMillis() - time;
+            LOG.info("TEST " + description.getMethodName() + " finished in " + time + " ms\n ----------------------------\n");
+        }
+    };
 
     @Autowired
     protected UserMealService service;
@@ -38,6 +68,13 @@ public class UserMealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void testDeleteNotFound() throws Exception {
+        service.delete(MEAL1_ID, 1);
+    }
+
+    @Test
+    public void testDeleteNotFoundWithRule() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with id=");
         service.delete(MEAL1_ID, 1);
     }
 
@@ -60,6 +97,13 @@ public class UserMealServiceTest {
     }
 
     @Test
+    public void testGetNotFoundWithRule() throws Exception {
+        thrown.expect(NotFoundException.class);
+        thrown.expectMessage("Not found entity with id=");
+        service.get(MEAL1_ID, ADMIN_ID);
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         UserMeal updated = getUpdated();
         service.update(updated, USER_ID);
@@ -68,6 +112,13 @@ public class UserMealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void testNotFoundUpdate() throws Exception {
+        UserMeal item = service.get(MEAL1_ID, USER_ID);
+        service.update(item, ADMIN_ID);
+    }
+
+    @Test
+    public void testNotFoundUpdateWithRule() throws Exception {
+        thrown.expect(Exception.class); // We can use parent classes, e.g. Exception for NotFoundException
         UserMeal item = service.get(MEAL1_ID, USER_ID);
         service.update(item, ADMIN_ID);
     }

@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.model;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
         @NamedQuery(name = UserMeal.GET_BETWEEN, query = "select m from UserMeal m where m.user.id = :userId and m.dateTime >= :startDateTime and m.dateTime < :endDateTime order by m.dateTime desc"),
 })
 @Entity
-@Table(name = "meals")
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class UserMeal extends BaseEntity {
 
     public static final String DELETE = "UserMeal.delete";
