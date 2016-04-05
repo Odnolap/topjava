@@ -7,6 +7,8 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,20 +22,14 @@ public class DataJpaUserMealRepositoryImpl implements UserMealRepository{
     @Autowired
     ProxyUserMealRepository proxy;
 
-    @Autowired
-    ProxyUserRepository userProxy;
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public UserMeal save(UserMeal userMeal, int userId) {
-        User u = userProxy.findOne(userId);
+        userMeal.setUser(em.getReference(User.class, userId));
+        return !userMeal.isNew() && get(userMeal.getId(), userId) == null ? null : proxy.save(userMeal);
 
-        if (userMeal.isNew()) {
-            userMeal.setUser(u);
-            return proxy.save(userMeal);
-        } else {
-            userMeal.setUser(u);
-            return get(userMeal.getId(), userId) == null ? null : proxy.save(userMeal);
-        }
     }
 
     @Override
