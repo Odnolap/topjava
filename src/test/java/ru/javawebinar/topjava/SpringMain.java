@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * User: gkislin
@@ -19,9 +20,11 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml","spring/mock.xml")) {
+        System.setProperty("spring.profiles.active", Profiles.POSTGRES + "," + Profiles.DATAJPA);
+        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml","spring/spring-db.xml")) {
             System.out.println(Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
+            adminUserController.delete(UserTestData.USER_ID);
             System.out.println(adminUserController.create(UserTestData.USER));
             System.out.println();
 
