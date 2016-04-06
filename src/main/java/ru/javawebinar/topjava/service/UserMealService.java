@@ -30,4 +30,8 @@ public interface UserMealService {
     UserMeal save(UserMeal meal, int userId);
 
     public void evictCache();
+
+    Collection<UserMeal> getUserWithMeal(int userId);
+
+    UserMeal getMealWithUser(int id, int userId) throws NotFoundException;
 }
