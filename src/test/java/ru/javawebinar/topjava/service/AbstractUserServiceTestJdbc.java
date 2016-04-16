@@ -16,18 +16,14 @@ import java.util.Collections;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
-abstract public class AbstractUserServiceTest extends AbstractServiceTest {
+abstract public class AbstractUserServiceTestJdbc extends AbstractServiceTest {
 
     @Autowired
     protected UserService service;
 
-    @Autowired
-    protected JpaUtil jpaUtil;
-
     @Before
     public void setUp() throws Exception {
         service.evictCache();
-        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
