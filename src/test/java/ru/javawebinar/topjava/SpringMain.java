@@ -20,11 +20,13 @@ public class SpringMain {
         // java 7 Automatic resource management
         try (GenericXmlApplicationContext appCtx = new GenericXmlApplicationContext()) {
             appCtx.getEnvironment().setActiveProfiles(Profiles.ACTIVE_DB, Profiles.DB_IMPLEMENTATION);
-            appCtx.load("spring/spring-app.xml", "spring/spring-db.xml");
+            appCtx.load("spring/spring-app.xml", "spring/spring-db.xml", "spring/spring-mvc.xml");
             appCtx.refresh();
 
             System.out.println(Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
+            UserTestData.USER.setEmail("test@gmail.com");
+            UserTestData.USER.setId(UserTestData.USER_ID + 1000);
             System.out.println(adminUserController.create(UserTestData.USER));
             System.out.println();
 
