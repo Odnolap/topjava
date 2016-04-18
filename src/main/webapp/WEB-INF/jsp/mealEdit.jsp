@@ -6,11 +6,11 @@
 <body>
 <jsp:include page="fragments/bodyHeaderMealEdit.jsp"/>
 <section>
-    <h2><a href="">Home</a></h2>
+    <h2><a href="${pageContext.request.contextPath}">Home</a></h2>
     <h3>Edit meal</h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.UserMeal" scope="request"/>
-    <form method="post" action="/topjava/meals">
+    <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt>DateTime:</dt>

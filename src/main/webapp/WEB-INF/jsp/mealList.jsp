@@ -7,9 +7,9 @@
 <body>
 <jsp:include page="fragments/bodyHeaderMealList.jsp"/>
 <section>
-    <h2><a href="/topjava">Home</a></h2>
+    <h2><a href="${pageContext.request.contextPath}">Home</a></h2>
     <h3>Meal list</h3>
-    <form method="post" action="/topjava/meals">
+    <form method="post" action="${pageContext.request.contextPath}/meals">
         <dl>
             <dt>From Date:</dt>
             <dd><input type="date" name="startDate" value="${startDate}"></dd>
