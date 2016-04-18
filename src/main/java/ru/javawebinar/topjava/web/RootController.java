@@ -108,32 +108,32 @@ public class RootController {
     }
 
     @RequestMapping(value = "/meals", method = RequestMethod.POST)
-    public String saveUserMeal(HttpServletRequest request) throws IOException {
+    public String saveUserMeal(HttpServletRequest request, Model model) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        final UserMeal userMeal = new UserMeal(
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.valueOf(request.getParameter("calories")));
+        String caloriesString = request.getParameter("calories");
+        if (caloriesString != null) {
+            final UserMeal userMeal = new UserMeal(
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.valueOf(request.getParameter("calories")));
 
-        if (request.getParameter("id").isEmpty()) {
-            mealController.create(userMeal);
+            if (request.getParameter("id").isEmpty()) {
+                mealController.create(userMeal);
+            } else {
+                String paramId = Objects.requireNonNull(request.getParameter("id"), "parameter id  must not be null");
+                mealController.update(userMeal, Integer.valueOf(paramId));
+            }
+
+            return ("redirect:meals");
         } else {
-            String paramId = Objects.requireNonNull(request.getParameter("id"), "parameter id  must not be null");
-            mealController.update(userMeal, Integer.valueOf(paramId));
+            LocalDate startDate = TimeUtil.parseLocalDate(resetParam("startDate", request));
+            LocalDate endDate = TimeUtil.parseLocalDate(resetParam("endDate", request));
+            LocalTime startTime = TimeUtil.parseLocalTime(resetParam("startTime", request));
+            LocalTime endTime = TimeUtil.parseLocalTime(resetParam("endTime", request));
+
+            model.addAttribute("mealList", mealController.getBetween(startDate, startTime, endDate, endTime));
+            return ("mealList");
         }
-        return ("redirect:meals");
-    }
-
-    @RequestMapping(value = "/meals/filter", method = RequestMethod.POST)
-    public String filterUserMeal(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException, ServletException {
-        LocalDate startDate = TimeUtil.parseLocalDate(resetParam("startDate", request));
-        LocalDate endDate = TimeUtil.parseLocalDate(resetParam("endDate", request));
-        LocalTime startTime = TimeUtil.parseLocalTime(resetParam("startTime", request));
-        LocalTime endTime = TimeUtil.parseLocalTime(resetParam("endTime", request));
-
-        model.addAttribute("mealList", mealController.getBetween(startDate, startTime, endDate, endTime));
-        request.getRequestDispatcher("/mealList.jsp").forward(request, response);
-        return "";
     }
 
     private String resetParam(String param, HttpServletRequest request) {

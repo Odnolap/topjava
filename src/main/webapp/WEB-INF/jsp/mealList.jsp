@@ -9,7 +9,7 @@
 <section>
     <h2><a href="/topjava">Home</a></h2>
     <h3>Meal list</h3>
-    <form method="post" action="meals/filter">
+    <form method="post" action="/topjava/meals">
         <dl>
             <dt>From Date:</dt>
             <dd><input type="date" name="startDate" value="${startDate}"></dd>
