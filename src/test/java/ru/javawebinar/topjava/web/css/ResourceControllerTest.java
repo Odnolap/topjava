@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.web.css;
 
 import org.junit.Test;
-import org.springframework.http.MediaType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
