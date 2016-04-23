@@ -19,7 +19,7 @@ import static ru.javawebinar.topjava.model.BaseEntity.START_SEQ;
 public class UserMealControllerTest extends AbstractControllerTest {
 
     @Test
-    public void testUserList() throws Exception {
+    public void testMealList() throws Exception {
         mockMvc.perform(get("/meals"))
                 .andDo(print())
                 .andExpect(status().isOk())
