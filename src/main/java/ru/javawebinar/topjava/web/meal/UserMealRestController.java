@@ -1,18 +1,18 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.to.UserMealWithExceed;
-import ru.javawebinar.topjava.util.TimeUtil;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -35,12 +35,13 @@ public class UserMealRestController extends AbstractUserMealController {
         return super.get(id);
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserMealWithExceed> getBetween(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime) {
-        LocalDate startDateLD = TimeUtil.parseLocalDate(startDate);
-        LocalDate endDateLD = TimeUtil.parseLocalDate(endDate);
-        LocalTime startTimeLT = TimeUtil.parseLocalTime(startTime);
-        LocalTime endTimeLT = TimeUtil.parseLocalTime(endTime);
+    @RequestMapping(value = "/between", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserMealWithExceed> getBetween(@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") @RequestParam("startDateTime") LocalDateTime startDateTime,
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") @RequestParam("endDateTime") LocalDateTime endDateTime) {
+        LocalDate startDateLD = startDateTime.toLocalDate();
+        LocalDate endDateLD = endDateTime.toLocalDate();
+        LocalTime startTimeLT = startDateTime.toLocalTime();
+        LocalTime endTimeLT = endDateTime.toLocalTime();
 
         return super.getBetween(startDateLD, startTimeLT, endDateLD, endTimeLT);
     }

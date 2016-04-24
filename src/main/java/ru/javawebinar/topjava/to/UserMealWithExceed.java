@@ -21,6 +21,10 @@ public class UserMealWithExceed {
         this(null, dateTime, description, calories, exceed);
     }
 
+    public UserMealWithExceed() {
+        this(null, null, null, 0, false);
+    }
+
     public UserMealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
         this.id = id;
         this.dateTime = dateTime;
