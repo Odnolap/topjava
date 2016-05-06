@@ -29,6 +29,7 @@ public class UserMealAjaxController extends AbstractUserMealController {
         super.delete(id);
     }
 
+/*
     @RequestMapping(method = RequestMethod.POST)
     public void updateOrCreate(@RequestParam("id") int id,
                                @RequestParam("datetime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
@@ -39,6 +40,16 @@ public class UserMealAjaxController extends AbstractUserMealController {
             super.create(meal);
         } else {
             super.update(meal, id);
+        }
+    }
+*/
+
+    @RequestMapping(method = RequestMethod.POST)
+    public void updateOrCreate(UserMeal userMeal) {
+        if (userMeal.getId() == 0) {
+            super.create(userMeal);
+        } else {
+            super.update(userMeal, userMeal.getId());
         }
     }
 
