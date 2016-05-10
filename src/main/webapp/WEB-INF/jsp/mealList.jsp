@@ -98,7 +98,7 @@
 
                         <div class="col-xs-9">
                             <input type="datetime-local" class="form-control" id="datetime"
-                                   name="datetime" placeholder="Date">
+                                   name="dateTime" placeholder="Date">
                         </div>
                     </div>
                     <div class="form-group">
@@ -134,59 +134,5 @@
 <script type="text/javascript" src="webjars/datatables/1.10.11/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="webjars/noty/2.3.8/js/noty/packaged/jquery.noty.packaged.min.js"></script>
 <script type="text/javascript" src="resources/js/datatablesUtil.js"></script>
-<script type="text/javascript">
-    var ajaxUrl = 'ajax/profile/meals/';
-    var datatableApi;
-
-    function updateTable() {
-        $.ajax({
-            type: "POST",
-            url: ajaxUrl + 'filter',
-            data: $('#filter').serialize(),
-            success: function (data) {
-                updateTableByData(data);
-            }
-        });
-        return false;
-    }
-
-    $(function () {
-        datatableApi = $('#datatable').DataTable(
-                {
-                    "paging": false,
-                    "info": true,
-                    "columns": [
-                        {
-                            "data": "dateTime"
-                        },
-                        {
-                            "data": "description"
-                        },
-                        {
-                            "data": "calories"
-                        },
-                        {
-                            "defaultContent": "Edit",
-                            "orderable": false
-                        },
-                        {
-                            "defaultContent": "Delete",
-                            "orderable": false
-                        }
-                    ],
-                    "order": [
-                        [
-                            0,
-                            "desc"
-                        ]
-                    ]
-                });
-
-        $('#filter').submit(function () {
-            updateTable();
-            return false;
-        });
-        makeEditable();
-    });
-</script>
+<script type="text/javascript" src="resources/js/mealDatatables.js"></script>
 </html>

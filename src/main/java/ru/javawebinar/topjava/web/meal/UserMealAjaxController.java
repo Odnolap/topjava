@@ -1,11 +1,15 @@
 package ru.javawebinar.topjava.web.meal;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.to.UserMealWithExceed;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -29,6 +33,11 @@ public class UserMealAjaxController extends AbstractUserMealController {
         super.delete(id);
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserMeal get(@PathVariable("id") int id) {
+        return super.get(id);
+    }
+
 /*
     @RequestMapping(method = RequestMethod.POST)
     public void updateOrCreate(@RequestParam("id") int id,
@@ -45,12 +54,18 @@ public class UserMealAjaxController extends AbstractUserMealController {
 */
 
     @RequestMapping(method = RequestMethod.POST)
-    public void updateOrCreate(UserMeal userMeal) {
+    public ResponseEntity<String> updateOrCreate(@Valid UserMeal userMeal, BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            result.getFieldErrors().forEach(fe -> sb.append(fe.getField()).append(" ").append(fe.getDefaultMessage()).append("<br>"));
+            return new ResponseEntity<>(sb.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
         if (userMeal.getId() == 0) {
             super.create(userMeal);
         } else {
-            super.update(userMeal, userMeal.getId());
+            super.update(userMeal);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/filter", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
