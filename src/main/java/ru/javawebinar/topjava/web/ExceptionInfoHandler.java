@@ -37,6 +37,14 @@ public interface ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e);
     }
 
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)  // 422
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    @Order(Ordered.HIGHEST_PRECEDENCE + 2)
+    default ErrorInfo unprocessableEntity(HttpServletRequest req, IllegalArgumentException e) {
+        return logAndGetErrorInfo(req, e);
+    }
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     @ResponseBody
