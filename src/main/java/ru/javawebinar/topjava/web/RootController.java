@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -60,7 +62,18 @@ public class RootController extends AbstractUserController {
             return "profile";
         } else {
             userTo.setId(LoggedUser.id());
-            super.update(userTo);
+            try {
+                super.update(userTo);
+            } catch (DataIntegrityViolationException e) {
+                Throwable cause = e.getCause();
+                if (cause != null &&
+                        cause instanceof ConstraintViolationException &&
+                        ((ConstraintViolationException) cause).getSQLException().getMessage().contains("users_unique_email_idx")) {
+                    throw new IllegalArgumentException("User with this email already present in application");
+                } else {
+                    throw e;
+                }
+            }
             LoggedUser.get().update(userTo);
             status.setComplete();
             return "redirect:meals";
@@ -80,7 +93,18 @@ public class RootController extends AbstractUserController {
             model.addAttribute("register", true);
             return "profile";
         } else {
-            super.create(UserUtil.createFromTo(userTo));
+            try {
+                super.create(UserUtil.createFromTo(userTo));
+            } catch (DataIntegrityViolationException e) {
+                Throwable cause = e.getCause();
+                if (cause != null &&
+                        cause instanceof ConstraintViolationException &&
+                        ((ConstraintViolationException) cause).getSQLException().getMessage().contains("users_unique_email_idx")) {
+                    throw new IllegalArgumentException("User with this email already present in application");
+                } else {
+                    throw e;
+                }
+            }
             status.setComplete();
             return "redirect:login?message=app.registered";
         }

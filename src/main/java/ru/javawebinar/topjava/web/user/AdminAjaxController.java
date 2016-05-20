@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,10 +45,21 @@ public class AdminAjaxController extends AbstractUserController implements Excep
             throw new IllegalArgumentException(sb.toString());
 //            return new ResponseEntity<>(sb.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (userTo.getId() == 0) {
-            super.create(UserUtil.createFromTo(userTo));
-        } else {
-            super.update(userTo);
+        try {
+            if (userTo.getId() == 0) {
+                super.create(UserUtil.createFromTo(userTo));
+            } else {
+                super.update(userTo);
+            }
+        } catch (DataIntegrityViolationException e) {
+            Throwable cause = e.getCause();
+            if (cause != null &&
+                    cause instanceof ConstraintViolationException &&
+                    ((ConstraintViolationException) cause).getSQLException().getMessage().contains("users_unique_email_idx")) {
+                throw new IllegalArgumentException("User with this email already present in application");
+            } else {
+                throw e;
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
