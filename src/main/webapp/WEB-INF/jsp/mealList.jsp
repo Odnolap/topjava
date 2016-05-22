@@ -104,7 +104,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-xs-offset-3 col-xs-9">
-                            <button type="submit" class="btn btn-primary">Save2</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </form:form>
